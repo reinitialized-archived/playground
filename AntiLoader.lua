@@ -18,22 +18,16 @@ local function updateBanlist()
 end
 
 local function isAuthorized(Player)
-    local success, authorized, Reason = pcall(
+    local success, response = pcall(
         function()
-            local Response = HttpService:JSONDecode(
+            return HttpService:JSONDecode(
                 HttpService:GetAsync(ApiUrl .."isAuthorized/".. Player.userId)
             )
-            if Response.Authorized then
-                print(Player, "passed trust check")
-                return true
-            end
-            print(Player, "failed trust check")
-            return false, Response.Reason
         end
     )
 
     if success then
-        return authorized, Reason
+        return response.authorized, response.reason
     end
     return false, "Could not verify identity"
 end

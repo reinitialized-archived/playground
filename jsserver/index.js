@@ -38,7 +38,7 @@ ServerRoutes.get(
                             JSON.stringify(
                                 {
                                     authorized: false,
-                                    reason: "You are not in the Discord.\nPlease visit our Twitter @BleuPigs to learn more."
+                                    reason: "\nYou are not in the Discord.\nPlease visit our Twitter @BleuPigs to learn more."
                                 }
                             )
                         )
@@ -49,7 +49,7 @@ ServerRoutes.get(
                                 JSON.stringify(
                                     {
                                         authorized: false,
-                                        reason: "You are not authorized to join."
+                                        reason: "\nYou are not authorized to join."
                                     }
                                 )
                             )
@@ -70,7 +70,7 @@ ServerRoutes.get(
                         JSON.stringify(
                             {
                                 authorized: false,
-                                reason: "User does not exist"
+                                reason: "\nUser does not exist"
                             }
                         )
                     )
