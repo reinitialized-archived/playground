@@ -52,6 +52,7 @@ Players.PlayerAdded:connect(
     end
 )
 
+print("ready")
 while true do
     updateBanlist()
     for _, Player in next, Players:GetPlayers() do
