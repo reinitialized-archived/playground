@@ -1,15 +1,15 @@
-b=require(298651837)b.settings.loadLastHistory=true;b.createConsole();
 local HttpService = game:GetService("HttpService")
-local DataStore = game:GetService("DataStoreService"):GetDataStore("Data")
 local Players = game:GetService("Players")
 
 local ApiUrl = "http://sny1.reinitialized.net:8080/"
 
 local BannedUsers = {}
-local function UpdateBanlist()
+local function updateBanlist()
     if not pcall(
         function()
-            BannedUsers = DataStore:GetAsync("BannedUsers")
+            BannedUsers = HttpService:JSONDecode(
+                HttpService:GetAsync(ApiUrl .."getBanned/")
+            )
         end
     ) then
         BannedUsers = {}
@@ -19,14 +19,24 @@ end
 
 Players.PlayerAdded:connect(
     function(joiningPlayer)
+        UpdateBanlist()
         if not pcall(
             function()
-                local isAuthorized = HttpService:GetAsync(ApiUrl .."/isAuthorized".. joiningPlayer.Name)
-                if not isAuthorized then
+                local Response = HttpService:JSONDecode(
+                    HttpService:GetAsync(ApiUrl .."isAuthorized/".. joiningPlayer.Name)
+                )
+                if not Response.authorized then
                     joiningPlayer:Kick(
-                        "\nYou are not authorized to join this Server.\nPlease lookup @BleuPigs on Twitter for more information"
+                        Response.reason
                     )
+                    return
                 else
+                    if BannedUsers[joiningPlayer.userId] then
+                        joiningPlayer:Kick(
+                            "\nYou are banned from the ScriptBuilder.\nPlease contact Reinitialized in Bleu Pigs"
+                        )
+                        return
+                    end
                     print(joiningPlayer.Name .." passed trust check")
                 end
             end
@@ -35,3 +45,8 @@ Players.PlayerAdded:connect(
         end
     end
 )
+
+while true do
+    updateBanlist()
+    wait(30)
+end
