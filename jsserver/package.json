@@ -1,0 +1,28 @@
+{
+  "name": "playground",
+  "version": "1.0.0",
+  "description": "Playground environment for learning new things",
+  "main": "index.js",
+  "dependencies": {
+    "bufferutil": "^4.0.1",
+    "discord.js": "^11.6.1",
+    "erlpack": "github:discordapp/erlpack",
+    "express": "^4.17.1",
+    "noblox.js": "^4.5.0",
+    "utf-8-validate": "^5.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ReinitiaIized/playground.git"
+  },
+  "author": "Reinitialized",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ReinitiaIized/playground/issues"
+  },
+  "homepage": "https://github.com/ReinitiaIized/playground#readme"
+}
