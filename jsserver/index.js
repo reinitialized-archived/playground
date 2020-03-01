@@ -31,8 +31,8 @@ ServerRoutes.get(
         // a response
         ROBLOX.getUsernameFromId(request.params.userId)
             .then(
-                (username) => {
-                    const User = ManagedGuild.members.find(member => member.nickname === username)
+                (userId) => {
+                    const User = ManagedGuild.members.find(member => member.nickname === userId)
                     if (User === null) {
                         response.status(200).send(
                             JSON.stringify(
