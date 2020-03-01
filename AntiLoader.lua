@@ -90,7 +90,12 @@ while true do
             Player:Kick(
                 "\nYou are banned from the ScriptBuilder.\nPlease contact Reinitialized in Bleu Pigs"
             )
+        else
+            local authorized, declineReason = isAuthorized(Player)
+            if not authorized then
+                Player:Kick(declineReason)
+            end
         end
     end
-    wait(10)
-end
+    wait(30)
+end 
