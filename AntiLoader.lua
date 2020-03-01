@@ -22,6 +22,7 @@ local function updateServerSettings()
             end
         end
     ) then
+        print("failed to update ServerSettings")
         ServerSettings = {}
     end
 end
@@ -56,7 +57,6 @@ Players.PlayerAdded:connect(
     end
 )
 
-print("ready")
 while true do
     updateServerSettings()
     if ServerSettings.ShutdownServer then
