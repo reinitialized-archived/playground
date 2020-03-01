@@ -64,6 +64,17 @@ ServerRoutes.get(
                         }
                     }
                 }
+            ).catch(
+                (err) => {
+                    response.status(200).send(
+                        JSON.stringify(
+                            {
+                                authorized: false,
+                                reason: "User does not exist"
+                            }
+                        )
+                    )
+                }
             )
     }
 )
