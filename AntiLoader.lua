@@ -10,10 +10,11 @@ local function updateServerSettings()
             ServerSettings = HttpService:JSONDecode(
                 HttpService:GetAsync(ApiUrl .."getServerSettings")
             )
+            print("updated ServerSettings")
         end
     ) then
         ServerSettings = {}
-        print("failed to retrieve Server Settings")
+        print("failed to retrieve ServerSettings")
     end
 end
 
