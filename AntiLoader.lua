@@ -24,8 +24,10 @@ local function isAuthorized(Player)
                 HttpService:GetAsync(ApiUrl .."isAuthorized/".. Player.userId)
             )
             if Response.Authorized then
+                print(Player, "passed trust check")
                 return true
             end
+            print(Player, "failed trust check")
             return false, Response.Reason
         end
     )
@@ -44,6 +46,7 @@ Players.PlayerAdded:connect(
             joiningPlayer:Kick(declineReason)
         end
         if BannedUsers[joiningPlayer.userId] then
+            print(joiningPlayer, "is banned")
             joiningPlayer:Kick("\nYou are banned from the ScriptBuilder.\nPlease contact Reinitialized in Bleu Pigs")
         end
     end
@@ -53,6 +56,7 @@ while true do
     updateBanlist()
     for _, Player in next, Players:GetPlayers() do
         if BannedUsers[Player.userId] then
+            print(Player, "is banned")
             Player:Kick(
                 "\nYou are banned from the ScriptBuilder.\nPlease contact Reinitialized in Bleu Pigs"
             )
