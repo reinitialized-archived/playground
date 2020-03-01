@@ -10,7 +10,6 @@ local function updateServerSettings()
             ServerSettings = HttpService:JSONDecode(
                 HttpService:GetAsync(ApiUrl .."getServerSettings")
             )
-            print("updated ServerSettings")
         end
     ) then
         ServerSettings = {}
@@ -63,6 +62,10 @@ while true do
             Player:Kick(
                 "\nYou are banned from the ScriptBuilder.\nPlease contact Reinitialized in Bleu Pigs"
             )
+        end
+        local authorized, reason = isAuthorized(Player)
+        if not authorized then
+            Player:Kick(reason)
         end
     end
     wait(10)
