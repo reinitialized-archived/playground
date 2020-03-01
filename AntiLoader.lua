@@ -8,7 +8,7 @@ local function updateBanlist()
     if not pcall(
         function()
             BannedUsers = HttpService:JSONDecode(
-                HttpService:GetAsync(ApiUrl .."getBanned/")
+                HttpService:GetAsync(ApiUrl .."getBanned")
             )
         end
     ) then
@@ -19,7 +19,7 @@ end
 
 Players.PlayerAdded:connect(
     function(joiningPlayer)
-        UpdateBanlist()
+        updateBanlist()
         if not pcall(
             function()
                 local Response = HttpService:JSONDecode(
@@ -48,5 +48,12 @@ Players.PlayerAdded:connect(
 
 while true do
     updateBanlist()
-    wait(30)
+    for _, Player in next, Players:GetPlayers() do
+        if BannedUsers[Player.userId] then
+            Player:Kick(
+                "\nYou are banned from the ScriptBuilder.\nPlease contact Reinitialized in Bleu Pigs"
+            )
+        end
+    end
+    wait(10)
 end

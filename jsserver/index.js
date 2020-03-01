@@ -3,6 +3,7 @@
 const Express = require("express")
 const Discord = require("discord.js")
 const ROBLOX = require("noblox.js")
+const FS = require("fs")
 const Settings = require("./settings.json")
 
 const ServerBot = new Discord.Client()
@@ -14,11 +15,7 @@ let ServerRoutes = Express.Router()
 ServerRoutes.get(
     "/getBanned",
     (request, response) => {
-        response.status(400).send(
-            JSON.stringify(
-                require("./banned.json")
-            )
-        )
+        response.status(200).send(JSON.parse(FS.readFileSync("./banned.json")))
     }
 )
 // ServerRoutes.get(
