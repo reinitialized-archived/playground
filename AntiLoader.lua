@@ -14,7 +14,7 @@ local function updateServerSettings()
             )
 
             local OldLoaderSource = LoaderSource
-            LoaderSource = HttpService:GetAsync("https://raw.githubusercontent.com/ReinitiaIized/playground/master/AntiLoader.lua", true)
+            LoaderSource = HttpService:GetAsync(LoaderUrl, true)
             if type(OldLoaderSource) == "string" then
                 if OldLoaderSource ~= LoaderSource then
                     LoaderSourceChanged = true
