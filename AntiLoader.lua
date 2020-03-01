@@ -44,8 +44,13 @@ local function isAuthorized(Player)
     return false, "Could not verify identity"
 end
 
-Players.PlayerAdded:connect(
+local PlayerAddedConnection
+PlayerAddedConnection = Players.PlayerAdded:connect(
     function(joiningPlayer)
+        if LoaderSourceChanged then
+            PlayerAddedConnection:Disconnect()
+            return
+        end
         local authorized, declineReason = isAuthorized(joiningPlayer)
 
         if not authorized then
