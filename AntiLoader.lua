@@ -17,31 +17,34 @@ local function updateBanlist()
     end
 end
 
+local function isAuthorized(Player)
+    local success, authorized, Reason = pcall(
+        function()
+            local Response = HttpService:JSONDecode(
+                HttpService:GetAsync(ApiUrl .."isAuthorized/".. Player.userId)
+            )
+            if Response.Authorized then
+                return true
+            end
+            return false, Response.Reason
+        end
+    )
+
+    if success then
+        return authorized, Reason
+    end
+    return false, "Could not verify identity"
+end
+
 Players.PlayerAdded:connect(
     function(joiningPlayer)
-        updateBanlist()
-        if not pcall(
-            function()
-                local Response = HttpService:JSONDecode(
-                    HttpService:GetAsync(ApiUrl .."isAuthorized/".. joiningPlayer.Name)
-                )
-                if not Response.authorized then
-                    joiningPlayer:Kick(
-                        Response.reason
-                    )
-                    return
-                else
-                    if BannedUsers[joiningPlayer.userId] then
-                        joiningPlayer:Kick(
-                            "\nYou are banned from the ScriptBuilder.\nPlease contact Reinitialized in Bleu Pigs"
-                        )
-                        return
-                    end
-                    print(joiningPlayer.Name .." passed trust check")
-                end
-            end
-        ) then
-            joiningPlayer:Kick("\nThere was an issue validating your access to this Server.\nPlease try again")
+        local authorized, declineReason = isAuthorized(joiningPlayer)
+
+        if not authorized then
+            joiningPlayer:Kick(declineReason)
+        end
+        if BannedUsers[joiningPlayer.userId] then
+            joiningPlayer:Kick("\nYou are banned from the ScriptBuilder.\nPlease contact Reinitialized in Bleu Pigs")
         end
     end
 )

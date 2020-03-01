@@ -15,7 +15,7 @@ let ServerRoutes = Express.Router()
 ServerRoutes.get(
     "/getBanned",
     (request, response) => {
-        response.status(200).send(JSON.parse(FS.readFileSync("./banned.json")))
+        response.status(200).send(JSON.stringify(JSON.parse(FS.readFileSync("./banned.json"))))
     }
 )
 // ServerRoutes.get(
