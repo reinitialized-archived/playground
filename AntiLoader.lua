@@ -78,10 +78,6 @@ while true do
                 "\nYou are banned from the ScriptBuilder.\nPlease contact Reinitialized in Bleu Pigs"
             )
         end
-        -- local authorized, reason = isAuthorized(Player)
-        -- if not authorized then
-        --     Player:Kick(reason)
-        -- end
     end
     wait(10)
 end
