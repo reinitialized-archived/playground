@@ -13,9 +13,9 @@ let ManagedGuild
 
 let ServerRoutes = Express.Router()
 ServerRoutes.get(
-    "/getBanned",
+    "/getServerSettings",
     (request, response) => {
-        response.status(200).send(JSON.stringify(JSON.parse(FS.readFileSync("./banned.json"))))
+        response.status(200).send(JSON.stringify(JSON.parse(FS.readFileSync("./serverSettings.json"))))
     }
 )
 // ServerRoutes.get(

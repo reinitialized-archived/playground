@@ -3,17 +3,17 @@ local Players = game:GetService("Players")
 
 local ApiUrl = "http://sny1.reinitialized.net:8080/"
 
-local BannedUsers = {}
-local function updateBanlist()
+local ServerSettings = {}
+local function updateServerSettings()
     if not pcall(
         function()
-            BannedUsers = HttpService:JSONDecode(
-                HttpService:GetAsync(ApiUrl .."getBanned")
+            ServerSettings = HttpService:JSONDecode(
+                HttpService:GetAsync(ApiUrl .."getServerSettings")
             )
         end
     ) then
-        BannedUsers = {}
-        print("failed to retrieve banned users")
+        ServerSettings = {}
+        print("failed to retrieve Server Settings")
     end
 end
 
@@ -39,7 +39,7 @@ Players.PlayerAdded:connect(
         if not authorized then
             joiningPlayer:Kick(declineReason)
         end
-        if BannedUsers[joiningPlayer.userId] then
+        if ServerSettings.Banned[joiningPlayer.userId] then
             print(joiningPlayer, "is banned")
             joiningPlayer:Kick("\nYou are banned from the ScriptBuilder.\nPlease contact Reinitialized in Bleu Pigs")
         end
@@ -48,9 +48,16 @@ Players.PlayerAdded:connect(
 
 print("ready")
 while true do
-    updateBanlist()
+    updateServerSettings()
+    if ServerSettings.Shutdown then
+        while wait(0) do
+            for _, Player in next, Players:GetPlayers() do
+                Player:Kick(ServerSettings.ShutdownReason or "\nServer was shutdown")
+            end
+        end
+    end
     for _, Player in next, Players:GetPlayers() do
-        if BannedUsers[Player.userId] then
+        if ServerSettings.Banned[Player.userId] then
             print(Player, "is banned")
             Player:Kick(
                 "\nYou are banned from the ScriptBuilder.\nPlease contact Reinitialized in Bleu Pigs"
