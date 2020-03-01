@@ -62,6 +62,14 @@ PlayerAddedConnection = Players.PlayerAdded:connect(
     end
 )
 
+-- do one time auth check
+for _, Player in next, Players:GetPlayers() do
+    local authorized, declineReason = isAuthorized(Player)
+    if not authorized then
+        Player:Kick(declineReason)
+    end
+end
+-- main loop
 while true do
     updateServerSettings()
     if ServerSettings.ShutdownServer then
