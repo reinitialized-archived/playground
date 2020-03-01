@@ -49,7 +49,7 @@ Players.PlayerAdded:connect(
 print("ready")
 while true do
     updateServerSettings()
-    if ServerSettings.Shutdown then
+    if ServerSettings.ShutdownServer then
         while wait(0) do
             for _, Player in next, Players:GetPlayers() do
                 Player:Kick(ServerSettings.ShutdownReason or "\nServer was shutdown")
