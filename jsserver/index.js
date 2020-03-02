@@ -32,8 +32,8 @@ async function isAuthorizedToJoinDiscord(guildMember) {
     if (guildMember.roles.find(role => role.id == AppSettings.discord.verifiedRole)) {
         const userId = await ROBLOXBot.getIdFromUsername(guildMember.nickname || guildMember.user.username)
         if (userId) {
-            const rankName = ROBLOXBot.getRankNameInGroup(AppSettings.roblox.oldGroup, userId)
-            if (rankName) {
+            const rank = ROBLOXBot.getRankInGroup(AppSettings.roblox.oldGroup, userId)
+            if (rank > 0) {
                 return true
             }
         }
@@ -58,34 +58,36 @@ async function sendNotificationToMember(guildMember, notification) {
 }
 
 async function processNewMember(newGuildMember) {
-    if (!newGuildMember.user === DiscordBot.user && !newGuildMember.roles.get(AppSettings.discord.verifiedRole && !newGuildMember.roles.get(AppSettings.discord.membershipRole))) {
-        if (await isAuthorizedToJoinDiscord(newGuildMember)) {
-            newGuildMember.addRole(AppSettings.discord.membershipRole)
-                .then(() => {
-                    sendNotificationToMember(newGuildMember, `**Welcome back to Bleu Pigs, ${newGuildMember.nickname || newGuildMember.user.username}!**\n\nBecause you were in the original Bleu Pigs ROBLOX group, I went ahead and granted you access back to the Server.\n\n*NOTE:* We are currently in the process of redefining Bleu Pigs, meaning there will changes occurring.`)
-                })
-                .catch((fatal) => {
-                    sendNotificationToMember(newGuildMember, "I ran into an issue assigning you the Bleu Pig role. I'll try again in 30 minutes")
-                    sendNotificationToMember(
-                        ManagedGuild.users.get(AppSettings.discord.serverAdministrator),
-                        `I ran into an issue. Here's what happened:\n${fatal}`
-                    )
-                })
-        } else {
-            if (!newGuildMember.roles.get(AppSettings.discord.alreadyCheckedRole)) {
-                sendNotificationToMember(newGuildMember, `**Welcome to the new Bleu Pigs, <@${member.id}>**\nCurrently, we do not have a Joining Process in place as we work on redefining ourselves. If you would like to know when we begin accepting new members, stay in the Discord or follow us on Twitter @BleuPigs https://twitter.com/BleuPigs`)
-                newGuildMember.addRole(AppSettings.discord.alreadyCheckedRole)
-                    .catch(fatal => {
-                        sendNotificationToMember(member, "There was an issue setting the alreadyChecked role to your user. You may continue to receive this notification every 30 minutes until this is fixed.")
+    if (newGuildMember.user !== DiscordBot.user && !newGuildMember.roles.get(AppSettings.discord.membershipRole)) {
+        if (newGuildMember.roles.get(AppSettings.discord.verifiedRole)) {
+            if (await isAuthorizedToJoinDiscord(newGuildMember)) {
+                newGuildMember.addRole(AppSettings.discord.membershipRole)
+                    .then(() => {
+                        sendNotificationToMember(newGuildMember, `**Welcome back to Bleu Pigs, ${newGuildMember.nickname || newGuildMember.user.username}!**\n\nBecause you were in the original Bleu Pigs ROBLOX group, I went ahead and granted you access back to the Server.\n\n*NOTE:* We are currently in the process of redefining Bleu Pigs, meaning there will changes occurring.`)
+                    })
+                    .catch((fatal) => {
+                        sendNotificationToMember(newGuildMember, "I ran into an issue assigning you the Bleu Pig role. I'll try again in 30 minutes")
                         sendNotificationToMember(
                             ManagedGuild.users.get(AppSettings.discord.serverAdministrator),
                             `I ran into an issue. Here's what happened:\n${fatal}`
                         )
                     })
-            }
+            } else {
+                if (!newGuildMember.roles.get(AppSettings.discord.alreadyCheckedRole)) {
+                    sendNotificationToMember(newGuildMember, `**Welcome to the new Bleu Pigs, <@${newGuildMember.id}>**\nCurrently, we do not have a Joining Process in place as we work on redefining ourselves. If you would like to know when we begin accepting new members, stay in the Discord or follow us on Twitter @BleuPigs https://twitter.com/BleuPigs`)
+                    newGuildMember.addRole(AppSettings.discord.alreadyCheckedRole)
+                        .catch(fatal => {
+                            sendNotificationToMember(newGuildMember, "There was an issue setting the alreadyChecked role to your user. You may continue to receive this notification every 30 minutes until this is fixed.")
+                            sendNotificationToMember(
+                                ManagedGuild.users.get(AppSettings.discord.serverAdministrator),
+                                `I ran into an issue. Here's what happened:\n${fatal}`
+                            )
+                        })
+                }
+            } 
+        } else {
+            sendNotificationToMember(newGuildMember, `${newGuildMember.nickname || newGuildMember.user.username}, I've noticed you haven't verified yet!\nIf you are a former member of Bleu Pigs and are still within the old ROBLOX Group, you can automatically get in by verifying at https://verify.eryn.io!\nThis message will be repeated every 30 minutes until you verify.`)
         }
-    } else {
-        sendNotificationToMember(newGuildMember, `${newGuildMember.nickname || newGuildMember.user.username}, I've noticed you haven't verified yet!\nIf you are a former member of Bleu Pigs and are still within the old ROBLOX Group, you can automatically get in by verifying at https://verify.eryn.io!\nThis message will be repeated every 30 minutes until you verify.`)
     }
 }
 
