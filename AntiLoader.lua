@@ -39,7 +39,7 @@ local function isAuthorized(Player)
     )
 
     if success then
-        return response.authorized, response.reason
+        return response.authorized, response.declineReason
     end
     return false, "Could not verify identity"
 end
@@ -97,5 +97,5 @@ while true do
             end
         end
     end
-    wait(30)
-end 
+    wait(60)
+end
