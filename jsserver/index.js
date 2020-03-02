@@ -58,7 +58,7 @@ async function sendNotificationToMember(guildMember, notification) {
 }
 
 async function processNewMember(newGuildMember) {
-    if (newGuildMember.user !== DiscordBot.user && !newGuildMember.roles.get(AppSettings.discord.membershipRole)) {
+    if (!newGuildMember.user === DiscordBot.user && !newGuildMember.roles.get(AppSettings.discord.verifiedRole && !newGuildMember.roles.get(AppSettings.discord.membershipRole))) {
         if (await isAuthorizedToJoinDiscord(newGuildMember)) {
             newGuildMember.addRole(AppSettings.discord.membershipRole)
                 .then(() => {
