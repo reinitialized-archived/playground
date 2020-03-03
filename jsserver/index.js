@@ -42,7 +42,7 @@ async function isAuthorizedToJoinDiscord(guildMember) {
 }
 
 async function sendNotificationToMember(guildMember, notification) {
-    if (guildMember.user !== DiscordBot.user) {
+    if (!guildMember.bot) {
         const dmChannel = await guildMember.createDM(DiscordBot.user)
         if (dmChannel) {
             dmChannel.send(notification)
