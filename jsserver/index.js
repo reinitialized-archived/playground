@@ -32,7 +32,7 @@ async function isAuthorizedToJoinDiscord(guildMember) {
     if (guildMember.roles.find(role => role.id == AppSettings.discord.verifiedRole)) {
         const userId = await ROBLOXBot.getIdFromUsername(guildMember.nickname || guildMember.user.username)
         if (userId) {
-            const rank = ROBLOXBot.getRankInGroup(AppSettings.roblox.oldGroup, userId)
+            const rank = await ROBLOXBot.getRankInGroup(AppSettings.roblox.oldGroup, userId)
             if (rank > 0) {
                 return true
             }
@@ -68,7 +68,7 @@ async function processNewMember(newGuildMember) {
                     .catch((fatal) => {
                         sendNotificationToMember(newGuildMember, "I ran into an issue assigning you the Bleu Pig role. I'll try again in 30 minutes")
                         sendNotificationToMember(
-                            ManagedGuild.users.get(AppSettings.discord.serverAdministrator),
+                            ManagedGuild.members.get(AppSettings.discord.serverAdministrator),
                             `I ran into an issue. Here's what happened:\n${fatal}`
                         )
                     })
@@ -79,7 +79,7 @@ async function processNewMember(newGuildMember) {
                         .catch(fatal => {
                             sendNotificationToMember(newGuildMember, "There was an issue setting the alreadyChecked role to your user. You may continue to receive this notification every 30 minutes until this is fixed.")
                             sendNotificationToMember(
-                                ManagedGuild.users.get(AppSettings.discord.serverAdministrator),
+                                ManagedGuild.members.get(AppSettings.discord.serverAdministrator),
                                 `I ran into an issue. Here's what happened:\n${fatal}`
                             )
                         })
@@ -106,7 +106,7 @@ ServerRoutes.get(
             } else {
                 response.status(500).send("failed to read data")
                 sendNotificationToMember(
-                    ManagedGuild.users.get(AppSettings.discord.serverAdministrator),
+                    ManagedGuild.members.get(AppSettings.discord.serverAdministrator),
                     `I ran into an issue. Here's what happened:\n${fatal}`
                 )
             }
