@@ -42,7 +42,7 @@ async function isAuthorizedToJoinDiscord(guildMember) {
 }
 
 async function sendNotificationToMember(guildMember, notification) {
-    if (!guildMember.bot) {
+    if (guildMember.bot !== true) {
         const dmChannel = await guildMember.createDM(DiscordBot.user)
         if (dmChannel) {
             dmChannel.send(notification)
@@ -58,7 +58,7 @@ async function sendNotificationToMember(guildMember, notification) {
 }
 
 async function processNewMember(newGuildMember) {
-    if (!newGuildMember.bot && !newGuildMember.roles.get(AppSettings.discord.membershipRole)) {
+    if (newGuildMember.bot !== true && !newGuildMember.roles.get(AppSettings.discord.membershipRole)) {
         if (newGuildMember.roles.get(AppSettings.discord.verifiedRole)) {
             if (await isAuthorizedToJoinDiscord(newGuildMember)) {
                 newGuildMember.addRole(AppSettings.discord.membershipRole)
