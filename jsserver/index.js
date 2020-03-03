@@ -58,7 +58,7 @@ async function sendNotificationToMember(guildMember, notification) {
 }
 
 async function processNewMember(newGuildMember) {
-    if (newGuildMember.user !== DiscordBot.user && !newGuildMember.roles.get(AppSettings.discord.membershipRole)) {
+    if (!newGuildMember.bot && !newGuildMember.roles.get(AppSettings.discord.membershipRole)) {
         if (newGuildMember.roles.get(AppSettings.discord.verifiedRole)) {
             if (await isAuthorizedToJoinDiscord(newGuildMember)) {
                 newGuildMember.addRole(AppSettings.discord.membershipRole)
@@ -86,7 +86,7 @@ async function processNewMember(newGuildMember) {
                 }
             } 
         } else {
-            sendNotificationToMember(newGuildMember, `${newGuildMember.nickname || newGuildMember.user.username}, I've noticed you haven't verified yet!\nIf you are a former member of Bleu Pigs and are still within the old ROBLOX Group, you can automatically get in by verifying at https://verify.eryn.io!\nThis message will be repeated every 30 minutes until you verify.`)
+            sendNotificationToMember(newGuildMember, `${newGuildMember.nickname || newGuildMember.user.username}, I've noticed you haven't verified yet!\nIf you are a former member of Bleu Pigs and are still within the old ROBLOX Group, you can automatically get in by verifying at https://verify.eryn.io\nThis message will be repeated every 30 minutes until you verify.`)
         }
     }
 }
