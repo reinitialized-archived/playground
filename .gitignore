@@ -1,3 +1,4 @@
-jsserver/node_modules
-jsserver/settings.json
-jsserver/cookie
+node_modules
+*.list
+*Dockerfile
+cookie

@@ -2,9 +2,7 @@
 const Express = require("express")
 const Discord = require("discord.js")
 const FS = require("fs")
-const AuthenticationSettings = require("./authenticationSettings.json")
-const AppSettings = require("./appSettings.json")
-
+const AppSettings = require("./appSettings.json")[process.env.launchType]
 const DiscordBot = new Discord.Client()
 const ROBLOXBot = require("noblox.js")
 let ManagedGuild
@@ -147,11 +145,10 @@ DiscordBot.on(
         if (!ManagedGuild) {
             console.error("failed to find Guild")
         } else {
-            HttpApiServer.listen(8080)
+            HttpApiServer.listen(process.env.httpApiPort)
             // search for pending members real quick
             ManagedGuild.members.forEach(processNewMember)
             setInterval(() => ManagedGuild.members.forEach(processNewMember), 1800000)
-            console.log("ready")
         }
     }
 )
@@ -159,4 +156,5 @@ DiscordBot.on("guildMemberAdd", processNewMember)
 // Initialization
 let HttpApiServer = Express()
 HttpApiServer.use(ServerRoutes)
-DiscordBot.login(AuthenticationSettings.discord)
+console.log(process.env.discord)
+DiscordBot.login(process.env.discord)

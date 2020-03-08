@@ -1,5 +1,5 @@
 {
-    "ShutdownServer": false,
+    "Shutdown": false,
     "ShutdownReason": "none provided",
     "Banned": {
 

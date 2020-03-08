@@ -4,6 +4,8 @@
   "description": "Playground environment for learning new things",
   "main": "index.js",
   "dependencies": {
+    "bent": "^7.1.0",
+    "bluebird": "^3.7.2",
     "bufferutil": "^4.0.1",
     "discord.js": "^11.6.1",
     "erlpack": "github:discordapp/erlpack",
