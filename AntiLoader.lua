@@ -1,7 +1,7 @@
 local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
 
-local ApiUrl = "http://sny1.reinitialized.net:8080/"
+local ApiUrl = "http://sny1.reinitialized.net/"
 local LoaderUrl = "https://raw.githubusercontent.com/ReinitiaIized/playground/master/AntiLoader.lua"
 local LoaderSource, LoaderSourceChanged = nil, false
 
