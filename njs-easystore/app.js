@@ -1,4 +1,4 @@
-// EasyBase: JSON first Postgres backed database
+// EasyStore: JSON first Postgres backed database
 'use strict';
 const GetEasyStore = require("./EasyStore");
 const Express = require("express");
@@ -13,7 +13,7 @@ const INSTANCE_ID = process.env.instanceId
 // Define Route APIs
 async function CreateNewDatabaseHash(request, response) {
     let hash = Crypto.createHash('sha256').update(Crypto.randomBytes(64)).digest('hex');
-    while (await EasyStoreIds.GetAsync(hash) !== null) {
+    while (EasyStoreIds.Get(hash)) {
         hash = Crypto.createHash('sha256').update(Crypto.randomBytes(64)).digest('hex');
     }
 
@@ -55,7 +55,7 @@ async function AssignAsSlave(request, response) {
 //const response = await post('cars/new', {name: 'bmw', wheels: 4});
 
 async function ReplicateToNodes(changingData) {
-    ReplicatingNodes.GetAllEntries().forEach(instanceId => {
+    ReplicatingNodes.GetAllEntries().forEach(async instanceId => {
         const response = await prepareRequest(`http://${instanceId}-es.in.reinitialized.net/easystore/replicate/`)
     });
 }
@@ -71,5 +71,5 @@ DatabaseRoutes.get("/", GetFromDatabase);
 DatabaseRoutes.post("/", SetToDatabase);
 
 const HttpServer = Express();
-HttpServer.use(DatabaseRoutes);
+HttpServer.use("/easystore/", DatabaseRoutes);
 HttpServer.listen(3000)

@@ -37,7 +37,7 @@ class EasyStore {
 module.exports = function(Name) {
     let Database = InMemory[Name];
     if (!Database) {
-        Database = new EasyBase(Name);
+        Database = new EasyStore(Name);
     };
 
     return Database;
