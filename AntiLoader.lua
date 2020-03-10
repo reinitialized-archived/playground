@@ -69,6 +69,7 @@ for _, Player in next, Players:GetPlayers() do
         Player:Kick(declineReason)
     end
 end
+print("AntiLoader ready")
 -- main loop
 while true do
     updateServerSettings()
