@@ -4,14 +4,13 @@
   "description": "Playground environment for learning new things",
   "main": "index.js",
   "dependencies": {
-    "bent": "^7.1.0",
-    "bluebird": "^3.7.2",
     "bufferutil": "^4.0.1",
     "discord.js": "^11.6.1",
     "erlpack": "github:discordapp/erlpack",
     "express": "^4.17.1",
     "noblox.js": "^4.5.0",
-    "utf-8-validate": "^5.0.2"
+    "utf-8-validate": "^5.0.2",
+    "zlib-sync": "^0.1.6"
   },
   "devDependencies": {},
   "scripts": {

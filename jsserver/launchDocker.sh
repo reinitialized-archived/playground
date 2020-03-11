@@ -1,0 +1,1 @@
+sudo docker run -dp 80:80 --env-file ./indevEnv.list reinitialized/bpbottemp:0.2 

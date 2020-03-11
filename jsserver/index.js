@@ -5,18 +5,18 @@ const FS = require("fs")
 const AppSettings = require("./appSettings.json")[process.env.launchType]
 const DiscordBot = new Discord.Client()
 const ROBLOXBot = require("noblox.js")
-let ManagedGuild
+let ManagedGuild = undefined
 
 // APIs
 async function isAuthorizedToJoinSRE(userId) {
-    const username = await ROBLOXBot.getUsernameFromId(userId)
+    const username = await ROBLOXBot.getUsernameFromId(userId) | undefined
     if (username) {
-        const User = ManagedGuild.members.find(member => member.nickname === username || member.user.username === username)
-        if (User === null) {
+        const User = ManagedGuild.members.find(member => member.nickname === username || member.user.username === username) | undefined
+        if (!User) {
             return {authorized: false, declineReason: "User not found in Discord\nVisit @BleuPigs on Twitter to learn how to join"}
         } else {
             const HasRole = User.roles.get(AppSettings.discord.membershipRole)
-            if (HasRole === null) {
+            if (HasRole === undefined) {
                 return {authorized: false, declineReason: "User not authorized\nYour membership has not been approved in Bleu Pigs"}
             } else {
                 return {authorized: true}
@@ -31,7 +31,7 @@ async function isAuthorizedToJoinDiscord(guildMember) {
         const userId = await ROBLOXBot.getIdFromUsername(guildMember.nickname || guildMember.user.username)
         if (userId) {
             const rank = await ROBLOXBot.getRankInGroup(AppSettings.roblox.oldGroup, userId)
-            if (rank > 0) {
+            if (rank > 1) {
                 return true
             }
         }
@@ -112,7 +112,7 @@ ServerRoutes.get(
                 response.status(500).send("failed to read data")
                 sendNotificationToMember(
                     ManagedGuild.members.get(AppSettings.discord.serverAdministrator),
-                    `I ran into an issue. Here's what happened:\n${fatal}`
+                    `I ran into an issue. Here's what happened:\n${readFailed}`
                 )
             }
         }
@@ -156,5 +156,4 @@ DiscordBot.on("guildMemberAdd", processNewMember)
 // Initialization
 let HttpApiServer = Express()
 HttpApiServer.use(ServerRoutes)
-console.log(process.env.discord)
 DiscordBot.login(process.env.discord)
