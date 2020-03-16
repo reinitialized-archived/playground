@@ -156,4 +156,5 @@ DiscordBot.on("guildMemberAdd", processNewMember)
 // Initialization
 let HttpApiServer = Express()
 HttpApiServer.use(ServerRoutes)
+console.log(process.env.httpApiPort);
 DiscordBot.login(process.env.discord)

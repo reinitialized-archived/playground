@@ -1,5 +1,5 @@
 {
-  "name": "cloudinit-server",
+  "name": "njs-mes",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "mongoose": "^5.9.4",
+    "restify": "^8.5.1"
   }
 }
+

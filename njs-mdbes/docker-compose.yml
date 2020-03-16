@@ -1,0 +1,51 @@
+version: '3.7'
+
+networks:
+    backend:
+        driver: bridge
+
+volumes:
+    bitnami:
+        driver: local
+    init:
+        driver: local
+
+services:
+    mongoDB:
+        image: bitnami/mongodb:4.2.4
+        networks:
+            - backend
+        volumes:
+            - ./data/bitnami:/bitnami
+            - ./data/init:/docker-entrypoint-initdb.d
+        environment:
+            - MONGODB_ROOT_PASSWORD=apassword
+            - MONGODB_USERNAME=easyStore
+            - MONGODB_PASSWORD=easyStore
+            - MONGODB_DATABASE=easyStore
+    mongoExpress:
+        image: mongo-express:0.54.0
+        depends_on: [mongoDB]
+        networks:
+            - backend
+        environment:
+            - ME_CONFIG_MONGODB_SERVER=mongoDB
+            - ME_CONFIG_MONGODB_ADMINUSERNAME=root
+            - ME_CONFIG_MONGODB_ADMINPASSWORD=apassword
+        ports:
+            - 8081:8081
+
+    easyStore:
+        image: 'scratch'
+        depends_on: [mongoDB]
+        build:
+            context: .
+            dockerfile: Dockerfile
+        environment:
+            - httpPort=${httpPort}
+        ports:
+            - ${httpPort}:${httpPort}
+        networks:
+            - backend
+
+    
