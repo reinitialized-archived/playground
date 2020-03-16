@@ -1,15 +1,14 @@
 const RESTify = require("restify");
-const Mongoose = require("mongoose");
+const Sequelize = require("sequelize");
 const Crypt = require("crypto");
 
-const MongoDB = Mongoose.createConnection("mongodb://easyStore:easyStore@mongoDB:27017/easyStore", {useNewUrlParser: true, useUnifiedTopology: true});
-const MSchema = Mongoose.Schema;
-const MSchemaTypes = Mongoose.SchemaTypes;
+const PostgresDB = new Sequelize("postgres://backend:backend@postgres1:5432/easystore");
+const DataTypes = Sequelize.DataTypes;
 
-const Model_EasyStore = MongoDB.model("easyStore", new MSchema({
-    token: MSchemaTypes.String,
-    dataStore: MSchemaTypes.Map
-}));
+const MODEL_EASYSTORE = PostgresDB.define("EasyStore", {
+    token: DataTypes.STRING(128),
+    dataStore: DataTypes.JSONB
+});
 
 // HttpServer
 const HttpServer = RESTify.createServer();
@@ -18,18 +17,16 @@ HttpServer.use(RESTify.plugins.urlEncodedBodyParser());
 
 HttpServer.get("/token/new", function(request, response, proceed) {
     const hash = Crypt.createHash("sha512").update(Crypt.randomBytes(64)).digest("hex");
-    const EasyStore = new Model_EasyStore({
+    MODEL_EASYSTORE.create({
         token: hash,
-        dataStore: new Map()
-    });
-
-    EasyStore.save()
+        dataStore: {}
+    })
         .then(function() {
             response.status(200);
             response.send({
                 success: true,
                 response: hash
-            })
+            });
         })
         .catch(function(fatal) {
             response.status(500);

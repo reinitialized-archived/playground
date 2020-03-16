@@ -5,34 +5,45 @@ networks:
         driver: bridge
 
 volumes:
-    bitnami:
+    postgres1:
         driver: local
     init:
+        driver: local
+    phpmyadmin:
         driver: local
 
 services:
     postgres1:
-        image: bitnami/postgres:12.2.0
+        image: bitnami/postgresql:12
         networks:
             - backend
         volumes:
-            - ./data/bitnami:/bitnami
+            - ./data/postgres1:/bitnami/postgres
+            - ./data/init/init.sql:/docker-entrypoint-initdb.d/init.sql
         environment:
-            - MONGODB_ROOT_PASSWORD=apassword
-            - MONGODB_USERNAME=easyStore
-            - MONGODB_PASSWORD=easyStore
-            - MONGODB_DATABASE=easyStore
+            - POSTGRESQL_PASSWORD=apassword
+    pgAdmin:
+        image: dpage/pgadmin4:4
+        depends_on:
+            - postgres1
+        networks:
+            - backend
+        ports:
+            - 8081:80
+        environment:
+            - PGADMIN_DEFAULT_EMAIL=user@example.com
+            - PGADMIN_DEFAULT_PASSWORD=a
     easyStore:
         image: 'scratch'
-        depends_on: [postgres1]
+        depends_on:
+            - postgres1
         build:
             context: .
             dockerfile: Dockerfile
-        environment:
-            - httpPort=${httpPort}
-        ports:
-            - ${httpPort}:${httpPort}
         networks:
             - backend
-
+        ports:
+            - ${httpPort}:${httpPort}
+        environment:
+            - httpPort=${httpPort}
     
