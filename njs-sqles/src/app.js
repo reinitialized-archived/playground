@@ -6,8 +6,16 @@ const PostgresDB = new Sequelize("postgres://backend:backend@postgres1:5432/easy
 const DataTypes = Sequelize.DataTypes;
 
 const MODEL_EASYSTORE = PostgresDB.define("EasyStore", {
-    token: DataTypes.STRING(128),
-    dataStore: DataTypes.JSONB
+    token: {
+        type: DataTypes.STRING(128),
+        primaryKey: true
+    },
+    dataStore: {
+        type: DataTypes.JSONB,
+        allowNull: false
+    }
+}, {
+    freezeTableName: true
 });
 
 // HttpServer
@@ -29,6 +37,7 @@ HttpServer.get("/token/new", function(request, response, proceed) {
             });
         })
         .catch(function(fatal) {
+            console.log(fatal);
             response.status(500);
             response.send({
                 success: false,
@@ -37,16 +46,18 @@ HttpServer.get("/token/new", function(request, response, proceed) {
         });
 });
 HttpServer.post("/datastore/get", function(request, response, proceed) {
-    Model_EasyStore.findOne({token: request.body.token})
+    MODEL_EASYSTORE.findOne({where: {token: request.body.token}})
         .then(function(EasyStore) {
             response.status(200);
-            const dbResponse = EasyStore.dataStore.get(request.body.key);
+            const dbResponse = EasyStore.dataStore[request.body.key];
+            console.log(dbResponse);
             response.send({
                 success: true,
-                response: dbResponse === undefined && "nil" || dbResponse
+                response: dbResponse
             });
         })
         .catch(function(fatal) {
+            console.log(fatal);
             response.status(500);
             response.send({
                 success: false,
@@ -55,22 +66,28 @@ HttpServer.post("/datastore/get", function(request, response, proceed) {
         });
 });
 HttpServer.post("/datastore/set", function(request, response, proceed) {
-    Model_EasyStore.findOne({token: request.body.token})
+    MODEL_EASYSTORE.findOne({where: {token: request.body.token}})
         .then(function(EasyStore) {
-            response.status(200);
-            EasyStore.dataStore.set(request.body.key, request.body.value);
-
-            // respond to the request, then save
-            response.send({
-                success: true
-            });
-            EasyStore.save()
+            EasyStore.dataStore[request.body.key] = request.body.value
+            EasyStore.update({dataStore: EasyStore.dataStore}, {where: {token: request.body.token}})
+                .then(function() {
+                    response.status(200);
+                    response.send({
+                        success: true
+                    });
+                    proceed();
+                })
                 .catch(function(fatal) {
                     console.log(fatal);
-                })
-            proceed();
+                    response.status(500);
+                    response.send({
+                        success: false,
+                        response: "fatal error occurred"
+                    });
+                });
         })
         .catch(function(fatal) {
+            console.log(fatal);
             response.status(500);
             response.send({
                 success: false,
@@ -79,7 +96,16 @@ HttpServer.post("/datastore/set", function(request, response, proceed) {
         })
 });
 
+PostgresDB.authenticate()
+    .then(async function() {
+        console.log("authenticate success. syncing models")
+        await PostgresDB.sync();
 
-HttpServer.listen(8080, ()=>{
-    console.log("wub");
-});
+        HttpServer.listen(8080, ()=>{
+            console.log("wub");
+        });
+    })
+    .catch(function(fatal) {
+        console.log(fatal);
+        throw new Error(fatal);
+    });
